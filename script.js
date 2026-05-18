@@ -14,9 +14,9 @@ const STORE_MAPS_URL = "https://www.google.com/maps?q=Brasileia,AC";
 const DELIVERY_FEES = { retirada: 0, Brasileia: 5, "Epitaciolândia": 7 };
 
 const PRODUCTS = [
-  { id: "hamburguer",          name: "Clássico da Casa", description: "Pão, alface, tomate, carne, queijo, calabresa e batata palha.",                   price: 13, image: "img/Clássico da Casa.png", category: "burger", tag: "Top vendido"     },
-  { id: "hamburguer-especial", name: "Turbinado",        description: "Pão, alface, tomate, carne, queijo, presunto, calabresa, bacon e batata palha.",  price: 18, image: "img/Turbinado.png",         category: "burger"                           },
-  { id: "hamburguer-duplo",    name: "Duplo Supremo",    description: "Pão, alface, tomate, 2 carnes, 2 queijos, 2 presuntos, 2 bacons e batata palha.", price: 23, image: "img/Duplo Supremo.png",    category: "burger", tag: "Pra fome grande" },
+  { id: "hamburguer",          name: "Clássico da Casa", description: "Pão, alface, tomate, carne, queijo, calabresa e batata palha.",                   price: 13, image: "img/classico.png", category: "burger", tag: "Top vendido"     },
+  { id: "hamburguer-especial", name: "Turbinado",        description: "Pão, alface, tomate, carne, queijo, presunto, calabresa, bacon e batata palha.",  price: 18, image: "img/turbinado.png",         category: "burger"                           },
+  { id: "hamburguer-duplo",    name: "Duplo Supremo",    description: "Pão, alface, tomate, 2 carnes, 2 queijos, 2 presuntos, 2 bacons e batata palha.", price: 23, image: "img/duplo.png",    category: "burger", tag: "Pra fome grande" },
 ];
 
 const fmt = (n) => Number(n).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
