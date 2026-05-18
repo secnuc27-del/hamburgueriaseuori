@@ -320,34 +320,6 @@ document.addEventListener("DOMContentLoaded", () => {
     if (t.name === "reference")    state.customer.reference    = t.value;
   });
 
-  // GPS
-  const btnGps    = document.getElementById("btn-gps");
-  const gpsStatus = document.getElementById("gps-status");
-  btnGps.addEventListener("click", () => {
-    if (!navigator.geolocation) { gpsStatus.textContent = "❌ Navegador não suporta GPS. Preencha manualmente."; gpsStatus.classList.remove("hidden"); return; }
-    btnGps.textContent = "📡 Capturando localização...";
-    navigator.geolocation.getCurrentPosition(
-      pos => {
-        state.customer.coords = { lat: pos.coords.latitude, lng: pos.coords.longitude };
-        btnGps.textContent = "✓ Localização capturada (toque para atualizar)";
-        btnGps.classList.add("captured");
-        gpsStatus.textContent = `📌 Lat: ${pos.coords.latitude.toFixed(5)} · Lng: ${pos.coords.longitude.toFixed(5)}`;
-        gpsStatus.classList.remove("hidden");
-        // Link de verificação no Maps
-        const verifyLink = document.getElementById("gps-verify-link");
-        verifyLink.href = `https://www.google.com/maps?q=${pos.coords.latitude},${pos.coords.longitude}`;
-        verifyLink.classList.remove("hidden");
-      },
-      err => {
-        btnGps.textContent = "📍 Usar minha localização via GPS";
-        btnGps.classList.remove("captured");
-        gpsStatus.textContent = `❌ Erro: ${escapeHtml(err.message)}. Preencha o endereço abaixo.`;
-        gpsStatus.classList.remove("hidden");
-        document.getElementById("gps-verify-link").classList.add("hidden");
-      },
-      { enableHighAccuracy: true, timeout: 10000 }
-    );
-  });
 
   document.getElementById("btn-next-3").addEventListener("click", () => {
     const err = document.getElementById("form-error");
