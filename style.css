@@ -589,18 +589,20 @@ textarea { resize: vertical; }
     border-radius: 18px;
     min-height: unset;
     max-height: unset;
-    overflow: hidden;
+    overflow: visible;
+    padding: 10px;
+    gap: 10px;
   }
 
-  /* Imagem: full-width no topo */
+  /* Imagem: full-width com bordas arredondadas */
   .prod-img-wrap {
     width: 100% !important;
     min-width: unset !important;
     max-width: unset !important;
-    aspect-ratio: 16/9 !important;
+    aspect-ratio: 4/3 !important;
     height: auto !important;
     flex-shrink: 0 !important;
-    border-radius: 0 !important;
+    border-radius: 12px !important;
     overflow: hidden;
   }
 
