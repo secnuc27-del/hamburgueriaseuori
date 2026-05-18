@@ -14,11 +14,9 @@ const STORE_MAPS_URL = "https://www.google.com/maps?q=Brasileia,AC";
 const DELIVERY_FEES = { retirada: 0, Brasileia: 5, "Epitaciolândia": 7 };
 
 const PRODUCTS = [
-  { id: "hamburguer",          name: "Clássico da Casa",          description: "Pão, alface, tomate, carne, queijo, calabresa e batata palha.",                   price: 13, image: "img/hambuger 1.jpeg", category: "burger", tag: "Top vendido"     },
-  { id: "hamburguer-especial", name: "Turbinado",  description: "Pão, alface, tomate, carne, queijo, presunto, calabresa, bacon e batata palha.",  price: 18, image: "img/hanburge 2.jpeg",  category: "burger"                           },
-  { id: "hamburguer-duplo",    name: "Duplo Supremo",     description: "Pão, alface, tomate, 2 carnes, 2 queijos, 2 presuntos, 2 bacons e batata palha.", price: 23, image: "img/hanburge 3.jpeg", category: "burger", tag: "Pra fome grande" },
-  { id: "coca-2l",  name: "Coca-Cola 2L", description: "Refrigerante gelado 2 litros, ideal pra família.", price: 15, image: "img/coca lalaala.png", category: "drink" },
-  { id: "monster",  name: "Monster",      description: "Energético gelado pra dar aquele gás.",          price: 26, image: "img/moster hhaahhaha.jpeg", category: "drink" },
+  { id: "hamburguer",          name: "Clássico da Casa", description: "Pão, alface, tomate, carne, queijo, calabresa e batata palha.",                   price: 13, image: "img/Clássico da Casa.png", category: "burger", tag: "Top vendido"     },
+  { id: "hamburguer-especial", name: "Turbinado",        description: "Pão, alface, tomate, carne, queijo, presunto, calabresa, bacon e batata palha.",  price: 18, image: "img/Turbinado.png",         category: "burger"                           },
+  { id: "hamburguer-duplo",    name: "Duplo Supremo",    description: "Pão, alface, tomate, 2 carnes, 2 queijos, 2 presuntos, 2 bacons e batata palha.", price: 23, image: "img/Duplo Supremo.png",    category: "burger", tag: "Pra fome grande" },
 ];
 
 const fmt = (n) => Number(n).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
@@ -235,11 +233,10 @@ function renderCard(p) {
 }
 
 function renderGrids() {
-  ["burger", "drink"].forEach(cat => {
-    const id   = cat === "burger" ? "grid-burgers" : "grid-drinks";
-    const grid = document.getElementById(id);
-    grid.innerHTML = PRODUCTS.filter(p => p.category === cat).map(renderCard).join("");
-  });
+  const grid = document.getElementById("grid-burgers");
+  if (grid) {
+    grid.innerHTML = PRODUCTS.filter(p => p.category === "burger").map(renderCard).join("");
+  }
 
   document.querySelectorAll("[data-add]").forEach(b => b.addEventListener("click", () => { addItem(PRODUCTS.find(p => p.id === b.dataset.add)); renderGrids(); updateBottomBar(); }));
   document.querySelectorAll("[data-inc]").forEach(b => b.addEventListener("click", () => { setQty(b.dataset.inc, (state.items.find(i=>i.product.id===b.dataset.inc)?.qty||0)+1); renderGrids(); updateBottomBar(); }));
@@ -307,8 +304,7 @@ function renderReview() {
     </div>
     <div class="rev-card">
       <h3 class="rev-card-title">Itens</h3>
-      ${burgers.length ? `<p class="rev-sub">Hambúrgueres</p><div class="rev-items">${itemRows(burgers)}</div>` : ""}
-      ${drinks.length  ? `<p class="rev-sub" style="margin-top:12px">Bebidas</p><div class="rev-items">${itemRows(drinks)}</div>` : ""}
+      ${burgers.length ? `<div class="rev-items">${itemRows(burgers)}</div>` : ""}
     </div>
     <div class="rev-card">
       <h3 class="rev-card-title">${state.orderType === "retirada" ? "Retirada no local" : "Endereço de entrega"}</h3>
