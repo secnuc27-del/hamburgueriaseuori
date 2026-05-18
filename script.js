@@ -250,7 +250,7 @@ function buildMessage() {
   const items = state.items.map(i => `   • ${i.qty}x ${i.product.name} — ${fmt(i.product.price)} (${fmt(i.product.price * i.qty)})`).join("\n");
 
   if (state.orderType === "retirada") {
-    return `🍔 *NOVO PEDIDO — RETIRADA NO LOCAL*\n\n👤 *Cliente:* ${state.customer.name}\n\n🛒 *Pedido:*\n${items}\n\n💰 Subtotal: ${fmt(sub)}\n🚚 Taxa de entrega: ${fmt(0)}\n✅ *Total: ${fmt(tot)}*\n\n💳 Forma de pagamento: ${PAY_LABEL[state.payment]}${troco}\n\n📝 Observação: ${obs}\n\n📍 Tipo de pedido: Cliente vai retirar no local.\n📌 Endereço da lanchonete: ${STORE_ADDRESS}\n🗺️ Rota: ${STORE_MAPS_URL}`;
+    return `🍔 *NOVO PEDIDO — RETIRADA NO LOCAL*\n\n👤 *Cliente:* ${state.customer.name}\n\n🛒 *Pedido:*\n${items}\n\n💰 Subtotal: ${fmt(sub)}\n🚚 Taxa de entrega: ${fmt(0)}\n✅ *Total: ${fmt(tot)}*\n\n💳 Forma de pagamento: ${PAY_LABEL[state.payment]}${troco}\n\n📝 Observação: ${obs}\n\n📍 Tipo de pedido: Cliente vai retirar no local.\n📌 Endereço da lanchonete: ${STORE_ADDRESS}`;
   } else if (state.customer.coords) {
     const mapsLink = `https://www.google.com/maps?q=${state.customer.coords.lat},${state.customer.coords.lng}`;
     return `🍔 *NOVO PEDIDO — ENTREGA COM GPS*\n\n👤 *Cliente:* ${state.customer.name}\n\n🛒 *Pedido:*\n${items}\n\n🏙️ Cidade: ${state.orderType}\n\n📍 Localização GPS do cliente: ${mapsLink}\n\n💰 Subtotal: ${fmt(sub)}\n🚚 Taxa de entrega: ${fmt(f)}\n✅ *Total: ${fmt(tot)}*\n\n💳 Forma de pagamento: ${PAY_LABEL[state.payment]}${troco}\n\n📝 Observação: ${obs}`;
