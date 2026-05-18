@@ -37,12 +37,106 @@ function escapeHtml(str) {
 }
 
 // ============================================
+//  Canvas de brasas animadas (background)
+// ============================================
+function initFireParticles() {
+  const canvas = document.createElement("canvas");
+  canvas.id = "fire-canvas";
+  document.body.prepend(canvas);
+
+  const ctx = canvas.getContext("2d");
+  let W = 0, H = 0;
+
+  function resize() {
+    W = canvas.width  = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+  }
+  resize();
+  window.addEventListener("resize", resize);
+
+  // Paleta de brasas: laranja, vermelho, amarelo-fogo
+  const COLORS = [
+    [255, 80,  20],   // laranja-fogo
+    [255, 45,  10],   // vermelho brasa
+    [255, 140, 30],   // laranja claro
+    [255, 200, 50],   // amarelo quente
+    [200, 40,  10],   // vermelho escuro
+  ];
+
+  class Ember {
+    constructor(scatter) {
+      this.reset(scatter);
+    }
+    reset(scatter) {
+      this.x = Math.random() * W;
+      // scatter = true espalha pelo canvas inteiro na inicialização
+      this.y = scatter ? Math.random() * H : H + 10 + Math.random() * 40;
+      this.r = Math.random() * 2.2 + 0.6;           // raio 0.6–2.8px
+      this.vy = -(Math.random() * 1.1 + 0.4);       // velocidade pra cima
+      this.vx = (Math.random() - 0.5) * 0.5;        // drift lateral
+      this.life = Math.random() * 0.6 + 0.4;        // vida 0.4–1.0
+      this.decay = Math.random() * 0.0025 + 0.0008; // quão rápido apaga
+      this.color = COLORS[Math.floor(Math.random() * COLORS.length)];
+      this.wobble = Math.random() * Math.PI * 2;     // fase do sway
+      this.wobbleSpeed = Math.random() * 0.04 + 0.01;
+    }
+    update() {
+      this.wobble += this.wobbleSpeed;
+      this.x += this.vx + Math.sin(this.wobble) * 0.3;
+      this.y += this.vy;
+      this.life -= this.decay;
+      if (this.life <= 0 || this.y < -20 || this.x < -20 || this.x > W + 20) {
+        this.reset(false);
+      }
+    }
+    draw() {
+      const alpha = Math.max(0, this.life) * 0.55;
+      const [r, g, b] = this.color;
+      // Brilho suave ao redor
+      const grd = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.r * 2.5);
+      grd.addColorStop(0,   `rgba(${r},${g},${b},${alpha})`);
+      grd.addColorStop(0.5, `rgba(${r},${g},${b},${alpha * 0.4})`);
+      grd.addColorStop(1,   `rgba(${r},${g},${b},0)`);
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.r * 2.5, 0, Math.PI * 2);
+      ctx.fillStyle = grd;
+      ctx.fill();
+    }
+  }
+
+  // Cria partículas — menos em mobile (< 600px)
+  const COUNT = window.innerWidth < 600 ? 55 : 100;
+  const embers = Array.from({ length: COUNT }, (_, i) => new Ember(true));
+
+  // Spawn ocasional de novas partículas
+  function spawnBatch() {
+    embers.forEach(e => {
+      if (e.life <= 0) e.reset(false);
+    });
+  }
+
+  let rafId;
+  function animate() {
+    ctx.clearRect(0, 0, W, H);
+    embers.forEach(e => { e.update(); e.draw(); });
+    rafId = requestAnimationFrame(animate);
+  }
+  animate();
+
+  // Pausa quando aba está oculta (economia de bateria)
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden) cancelAnimationFrame(rafId);
+    else animate();
+  });
+}
+
+// ============================================
 //  Estado do pedido
 // ============================================
 const PAY_LABEL = { pix: "Pix", credito: "Cartão de crédito", debito: "Cartão de débito", dinheiro: "Dinheiro em mão" };
 
 let state = {
-  items: [],          // [{ product, qty }]
+  items: [],
   step: 1,
   orderType: null,
   customer: { name: "", notes: "", street: "", number: "", neighborhood: "", complement: "", reference: "", coords: null },
@@ -70,7 +164,6 @@ function resetOrder() {
   state.customer = { name: "", notes: "", street: "", number: "", neighborhood: "", complement: "", reference: "", coords: null };
   state.payment = null;
   state.change = "";
-  // Reset GPS UI
   const btnGps = document.getElementById("btn-gps");
   const gpsStatus = document.getElementById("gps-status");
   const verifyLink = document.getElementById("gps-verify-link");
@@ -86,7 +179,9 @@ function goTo(n) {
   state.step = n;
 
   document.querySelectorAll(".step").forEach(el => el.classList.remove("active"));
-  document.getElementById(`step-${n}`).classList.add("active");
+  // Remove e re-adiciona a classe para re-disparar a animação
+  const target = document.getElementById(`step-${n}`);
+  target.classList.add("active");
 
   document.querySelectorAll(".s-item").forEach(el => {
     const s = Number(el.dataset.step);
@@ -115,13 +210,12 @@ function goTo(n) {
 function renderCard(p) {
   const inCart = state.items.find(i => i.product.id === p.id);
   const qty    = inCart?.qty ?? 0;
-  // Dados de produto são controlados pelo desenvolvedor (sem risco XSS)
   return `
     <article class="prod-card">
       <div class="prod-img-wrap">
         <img class="prod-img" src="${p.image}" alt="${p.name}" loading="lazy" />
         ${p.tag ? `<span class="prod-badge">${p.tag}</span>` : ""}
-        ${qty > 0 ? `<span class="prod-incart">✓ ${qty} no carrinho</span>` : ""}
+        ${qty > 0 ? `<span class="prod-incart">✓ ${qty}x</span>` : ""}
       </div>
       <div class="prod-body">
         <div>
@@ -160,15 +254,25 @@ function updateBottomBar() {
 }
 
 // ============================================
-//  Revisão — com escapeHtml em todos os campos
-//  do usuário para evitar XSS
+//  Review
 // ============================================
 function renderReview() {
+  const sub = subtotal(), f = fee(), tot = total();
   const burgers = state.items.filter(i => i.product.category === "burger");
   const drinks  = state.items.filter(i => i.product.category === "drink");
-  const sub     = subtotal(), f = fee(), tot = total();
+  const orderLabel = state.orderType === "retirada" ? "Retirada no local" : `Entrega em ${state.orderType}`;
 
-  // Dados inseridos pelo usuário — todos sanitizados
+  const itemRows = items => items.map(i => {
+    const safeQty   = escapeHtml(String(i.qty));
+    const safeName  = escapeHtml(i.product.name);
+    const safePrice = escapeHtml(fmt(i.product.price));
+    const safeTotal = escapeHtml(fmt(i.qty * i.product.price));
+    return `<div class="rev-item">
+      <span class="rev-item-name"><strong>${safeQty}x</strong> ${safeName} · ${safePrice}</span>
+      <span class="rev-item-price">${safeTotal}</span>
+    </div>`;
+  }).join("");
+
   const safeCustomer = {
     name:         escapeHtml(state.customer.name),
     notes:        escapeHtml(state.customer.notes),
@@ -180,32 +284,18 @@ function renderReview() {
     change:       escapeHtml(state.change),
   };
 
-  const itemRows = (list) => list.map(i => `
-    <div class="rev-item">
-      <span class="rev-item-name"><strong>${i.qty}x</strong> ${escapeHtml(i.product.name)} · ${fmt(i.product.price)}</span>
-      <span class="rev-item-price">${fmt(i.product.price * i.qty)}</span>
-    </div>`).join("");
-
-  const orderLabel = state.orderType === "retirada" ? "Retirada no local"
-    : state.orderType === "Brasileia" ? "Entrega em Brasiléia"
-    : "Entrega em Epitaciolândia";
-
-  let addrHtml;
-  if (state.orderType === "retirada") {
-    addrHtml = `<div class="rev-row"><span>Local</span><span>${escapeHtml(STORE_ADDRESS)}</span></div>`;
-  } else if (state.customer.coords) {
-    const lat = state.customer.coords.lat;
-    const lng = state.customer.coords.lng;
-    const mapsUrl = `https://www.google.com/maps?q=${encodeURIComponent(lat)},${encodeURIComponent(lng)}`;
-    addrHtml = `
-      <div class="rev-row"><span>Localização</span><span>GPS capturado</span></div>
-      <div class="rev-row"><span>Link</span><a href="${mapsUrl}" target="_blank" style="color:var(--orange)">Ver no Maps</a></div>`;
-  } else {
-    addrHtml = `
-      <div class="rev-row"><span>Rua</span><span>${safeCustomer.street}, ${safeCustomer.number}</span></div>
-      <div class="rev-row"><span>Bairro</span><span>${safeCustomer.neighborhood}</span></div>
-      ${safeCustomer.complement ? `<div class="rev-row"><span>Complemento</span><span>${safeCustomer.complement}</span></div>` : ""}
-      ${safeCustomer.reference  ? `<div class="rev-row"><span>Referência</span><span>${safeCustomer.reference}</span></div>` : ""}`;
+  let addrHtml = `<div class="rev-row"><span>Local</span><span>${escapeHtml(STORE_ADDRESS)}</span></div>`;
+  if (state.orderType !== "retirada") {
+    if (state.customer.coords) {
+      const mapsLink = `https://www.google.com/maps?q=${state.customer.coords.lat},${state.customer.coords.lng}`;
+      addrHtml = `<div class="rev-row"><span>Localização GPS</span><span><a href="${mapsLink}" target="_blank" style="color:var(--orange)">Ver no mapa</a></span></div>`;
+    } else {
+      addrHtml = `
+        <div class="rev-row"><span>Rua</span><span>${safeCustomer.street}, nº ${safeCustomer.number}</span></div>
+        <div class="rev-row"><span>Bairro</span><span>${safeCustomer.neighborhood}</span></div>
+        ${safeCustomer.complement ? `<div class="rev-row"><span>Complemento</span><span>${safeCustomer.complement}</span></div>` : ""}
+        ${safeCustomer.reference  ? `<div class="rev-row"><span>Referência</span><span>${safeCustomer.reference}</span></div>` : ""}`;
+    }
   }
 
   document.getElementById("review-card").innerHTML = `
@@ -264,6 +354,9 @@ function buildMessage() {
 // ============================================
 document.addEventListener("DOMContentLoaded", () => {
 
+  // Inicia as brasas animadas no background
+  initFireParticles();
+
   renderGrids();
   updateBottomBar();
 
@@ -319,7 +412,6 @@ document.addEventListener("DOMContentLoaded", () => {
     if (t.name === "complement")   state.customer.complement   = t.value;
     if (t.name === "reference")    state.customer.reference    = t.value;
   });
-
 
   document.getElementById("btn-next-3").addEventListener("click", () => {
     const err = document.getElementById("form-error");
