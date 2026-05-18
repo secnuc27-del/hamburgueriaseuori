@@ -1,5 +1,5 @@
 /* =========================================
-   Burger do Chefe — redesign mobile-first
+   Burger do Chefe - redesign mobile-first
    ========================================= */
 @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700;800&display=swap');
 
@@ -149,7 +149,7 @@ h1, h2, h3, .display { font-family: 'Bebas Neue', 'Inter', sans-serif; letter-sp
 }
 .s-line.done { background: var(--green); }
 
-/* ===== STEPS — animação de entrada ===== */
+/* ===== STEPS - animacao de entrada ===== */
 .step { display: none; }
 
 @keyframes stepIn {
@@ -259,7 +259,7 @@ h1, h2, h3, .display { font-family: 'Bebas Neue', 'Inter', sans-serif; letter-sp
   color: transparent;
 }
 
-/* ===== BOTÕES ===== */
+/* ===== BOTOES ===== */
 .btn-hero {
   display: inline-flex; align-items: center; justify-content: center; gap: 8px;
   padding: 12px 22px; border-radius: var(--radius);
@@ -538,15 +538,15 @@ textarea { resize: vertical; }
 .btn-gps-verify:hover { background: hsl(142 65% 42% / 0.2); border-color: hsl(142 65% 42% / 0.8); }
 
 /* ============================================================
-   MOBILE — Redesign completo
+   MOBILE - Redesign completo
    ============================================================ */
 
-/* ── Container: padding lateral adequado ── */
+/* -- Container: padding lateral adequado -- */
 @media (max-width: 480px) {
   .container { padding: 0 16px; }
 }
 
-/* ── Header mobile ── */
+/* -- Header mobile -- */
 @media (max-width: 600px) {
   .hd-hours { display: none; }
   .hd-inner { height: 58px; gap: 8px; }
@@ -556,14 +556,14 @@ textarea { resize: vertical; }
   .stepper-bar { top: 58px; }
 }
 
-/* ── Stepper: bubbles menores ── */
+/* -- Stepper: bubbles menores -- */
 @media (max-width: 400px) {
   .stepper-bar { padding: 10px 0; }
   .s-bubble { width: 28px; height: 28px; font-size: 10px; }
   .s-line { min-width: 6px; margin: 0 2px; }
 }
 
-/* ── Step body: espaçamento ajustado ── */
+/* -- Step body: espacamento ajustado -- */
 @media (max-width: 600px) {
   .step-body { padding: 24px 0 52px; }
   .pb-bar { padding-bottom: 90px; }
@@ -574,7 +574,7 @@ textarea { resize: vertical; }
   .cat-title { font-size: 28px; }
 }
 
-/* ── PRODUTO: layout horizontal compacto no mobile ── */
+/* -- PRODUTO: layout horizontal compacto no mobile -- */
 @media (max-width: 600px) {
   .grid3 {
     grid-template-columns: 1fr;
@@ -589,7 +589,7 @@ textarea { resize: vertical; }
     align-items: stretch;
   }
 
-  /* Imagem: bloco fixo à esquerda */
+  /* Imagem: bloco fixo a esquerda */
   .prod-img-wrap {
     width: 108px;
     min-width: 108px;
@@ -614,7 +614,7 @@ textarea { resize: vertical; }
     left: auto;
   }
 
-  /* Body: info compacta à direita */
+  /* Body: info compacta a direita */
   .prod-body {
     padding: 12px 14px 12px 14px;
     gap: 5px;
@@ -642,7 +642,7 @@ textarea { resize: vertical; }
     line-height: 1;
   }
 
-  /* Botão Adicionar compacto */
+  /* Botao Adicionar compacto */
   .btn-hero.full {
     padding: 8px 12px;
     font-size: 12px;
@@ -660,14 +660,14 @@ textarea { resize: vertical; }
   .qty-num { font-size: 14px; }
 }
 
-/* ── Bottom bar: compacto ── */
+/* -- Bottom bar: compacto -- */
 @media (max-width: 480px) {
   .bottom-bar { padding: 10px 16px; gap: 10px; }
   .bb-total { font-size: 26px; }
   .bb-count { font-size: 9px; letter-spacing: 1.5px; }
 }
 
-/* ── Full width listas e formulários ── */
+/* -- Full width listas e formularios -- */
 @media (max-width: 720px) {
   .option-list,
   .store-card,
@@ -678,7 +678,7 @@ textarea { resize: vertical; }
   .review-stack { max-width: 100%; }
 }
 
-/* ── Opt-row mobile ── */
+/* -- Opt-row mobile -- */
 @media (max-width: 440px) {
   .opt-row { padding: 13px 14px; gap: 12px; }
   .opt-icon { width: 46px; height: 46px; font-size: 21px; border-radius: 10px; }
@@ -687,7 +687,7 @@ textarea { resize: vertical; }
   .opt-price { font-size: 18px; }
 }
 
-/* ── Step nav: botões empilhados ── */
+/* -- Step nav: botoes empilhados -- */
 @media (max-width: 520px) {
   .step-nav {
     flex-direction: column-reverse;
@@ -703,7 +703,7 @@ textarea { resize: vertical; }
   }
 }
 
-/* ── Payment grid mobile ── */
+/* -- Payment grid mobile -- */
 @media (max-width: 420px) {
   .pay-opt { padding: 13px 10px; gap: 8px; border-radius: 12px; }
   .pay-icon { width: 40px; height: 40px; font-size: 18px; border-radius: 10px; }
@@ -711,18 +711,18 @@ textarea { resize: vertical; }
   .pay-grid { gap: 8px; }
 }
 
-/* ── Field row address ── */
+/* -- Field row address -- */
 @media (max-width: 400px) {
   .field-row { grid-template-columns: 1fr 78px; }
 }
 
-/* ── Review mobile ── */
+/* -- Review mobile -- */
 @media (max-width: 400px) {
   .rev-total-val { font-size: 28px; }
   .rev-card { padding: 16px; }
 }
 
-/* ── WhatsApp btn mobile ── */
+/* -- WhatsApp btn mobile -- */
 @media (max-width: 520px) {
   .btn-whatsapp { width: 100%; font-size: 15px; padding: 15px 20px; }
 }
