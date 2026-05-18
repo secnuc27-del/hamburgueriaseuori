@@ -1,10 +1,10 @@
 /* =========================================
-   Burger do Chefe — fiel ao design Lovable
+   Burger do Chefe — redesign mobile-first
    ========================================= */
 @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700;800&display=swap');
 
 :root {
-  --bg:       hsl(24 12% 8%);
+  --bg:       hsl(24 12% 7%);
   --card:     hsl(24 14% 12%);
   --muted:    hsl(24 10% 18%);
   --text:     hsl(40 30% 96%);
@@ -26,17 +26,35 @@
 /* ===== RESET ===== */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; }
+
 body {
   background-color: var(--bg);
   color: var(--text);
   font-family: 'Inter', system-ui, sans-serif;
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
-  background-image:
-    radial-gradient(circle at 10% 0%, hsl(18 92% 30% / 0.18), transparent 40%),
-    radial-gradient(circle at 90% 80%, hsl(0 78% 35% / 0.15), transparent 40%);
-  background-attachment: fixed;
+  min-height: 100vh;
+  position: relative;
+  overflow-x: hidden;
 }
+
+/* ===== CANVAS DE BRASAS (inserido via JS) ===== */
+#fire-canvas {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ===== GARANTE QUE TUDO FIQUE ACIMA DO CANVAS ===== */
+.header,
+.step,
+.bottom-bar {
+  position: relative;
+  z-index: 1;
+}
+
 img { display: block; max-width: 100%; }
 button { cursor: pointer; font-family: inherit; background: none; border: none; color: inherit; }
 input, textarea, a { font-family: inherit; }
@@ -47,8 +65,9 @@ h1, h2, h3, .display { font-family: 'Bebas Neue', 'Inter', sans-serif; letter-sp
 /* ===== HEADER ===== */
 .header {
   position: sticky; top: 0; z-index: 50;
-  background: hsl(24 12% 8% / 0.8);
-  backdrop-filter: blur(16px);
+  background: hsl(24 12% 7% / 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   border-bottom: 1px solid var(--border);
 }
 .hd-inner {
@@ -65,7 +84,7 @@ h1, h2, h3, .display { font-family: 'Bebas Neue', 'Inter', sans-serif; letter-sp
   flex-shrink: 0;
   transition: transform 0.35s cubic-bezier(.4,0,.2,1);
 }
-.logo:hover .logo-icon { transform: scale(1.05); }
+.logo:hover .logo-icon { transform: scale(1.05) rotate(-4deg); }
 .logo-name {
   font-family: 'Bebas Neue', sans-serif;
   font-size: 26px; letter-spacing: 0.05em;
@@ -73,25 +92,26 @@ h1, h2, h3, .display { font-family: 'Bebas Neue', 'Inter', sans-serif; letter-sp
 }
 .hd-hours { margin-left: auto; color: var(--subtle); font-size: 13px; white-space: nowrap; }
 .btn-restart {
+  margin-left: auto;
   color: var(--subtle); font-size: 13px; font-weight: 600;
-  padding: 6px 12px; border-radius: 8px;
+  padding: 6px 14px; border-radius: 8px;
+  border: 1px solid var(--border);
   white-space: nowrap;
-  transition: color .2s;
+  transition: color .2s, border-color .2s;
   flex-shrink: 0;
 }
-.btn-restart:hover { color: var(--text); }
+.btn-restart:hover { color: var(--text); border-color: var(--orange); }
 
 /* ===== STEPPER ===== */
 .stepper-bar {
   position: sticky; top: 64px; z-index: 40;
-  background: hsl(24 12% 8% / 0.9);
+  background: hsl(24 12% 7% / 0.92);
   backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   border-bottom: 1px solid var(--border);
   padding: 14px 0;
 }
-.stepper-list {
-  display: flex; align-items: center;
-}
+.stepper-list { display: flex; align-items: center; }
 .s-item {
   display: flex; align-items: center; gap: 8px;
   opacity: 0.4; transition: opacity 0.35s;
@@ -129,14 +149,24 @@ h1, h2, h3, .display { font-family: 'Bebas Neue', 'Inter', sans-serif; letter-sp
 }
 .s-line.done { background: var(--green); }
 
-/* ===== STEPS ===== */
+/* ===== STEPS — animação de entrada ===== */
 .step { display: none; }
-.step.active { display: block; }
-.step-body { padding: 40px 20px 60px; }
+
+@keyframes stepIn {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.step.active {
+  display: block;
+  animation: stepIn 0.4s cubic-bezier(.25,.46,.45,.94) both;
+}
+
+.step-body { padding: 36px 20px 60px; }
 .pb-bar { padding-bottom: 100px; }
 
 /* ===== STEP HEADER ===== */
-.step-header { margin-bottom: 40px; }
+.step-header { margin-bottom: 36px; }
 .step-header.centered { text-align: center; }
 .step-eyebrow {
   font-size: 11px; font-weight: 700;
@@ -145,8 +175,8 @@ h1, h2, h3, .display { font-family: 'Bebas Neue', 'Inter', sans-serif; letter-sp
 }
 .step-title {
   font-family: 'Bebas Neue', sans-serif;
-  font-size: clamp(38px, 7vw, 72px);
-  line-height: 1; margin-bottom: 12px;
+  font-size: clamp(34px, 7vw, 72px);
+  line-height: 1; margin-bottom: 10px;
 }
 .step-desc { color: var(--subtle); font-size: 15px; max-width: 560px; margin: 0 auto; }
 .grad-text {
@@ -156,8 +186,8 @@ h1, h2, h3, .display { font-family: 'Bebas Neue', 'Inter', sans-serif; letter-sp
 }
 
 /* ===== CATEGORY SECTION ===== */
-.cat-section { margin-bottom: 48px; }
-.cat-heading { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
+.cat-section { margin-bottom: 40px; }
+.cat-heading { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
 .cat-icon {
   width: 40px; height: 40px; border-radius: 12px;
   display: grid; place-items: center;
@@ -166,18 +196,20 @@ h1, h2, h3, .display { font-family: 'Bebas Neue', 'Inter', sans-serif; letter-sp
 }
 .cat-icon.fire { background: var(--grad-fire); box-shadow: var(--glow); }
 .cat-icon.warm { background: var(--grad-warm); box-shadow: 0 10px 30px -10px hsl(38 95% 55% / 0.4); }
-.cat-title { font-family: 'Bebas Neue', sans-serif; font-size: 36px; }
+.cat-title { font-family: 'Bebas Neue', sans-serif; font-size: 34px; }
 
 /* ===== PRODUCT GRID ===== */
 .grid3 {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  gap: 24px;
+  gap: 20px;
 }
+
+/* ===== PRODUCT CARD (desktop) ===== */
 .prod-card {
   background: var(--grad-card);
   border: 1px solid hsl(24 12% 22% / 0.6);
-  border-radius: 24px;
+  border-radius: 20px;
   overflow: hidden;
   display: flex; flex-direction: column;
   box-shadow: var(--shadow);
@@ -188,7 +220,7 @@ h1, h2, h3, .display { font-family: 'Bebas Neue', 'Inter', sans-serif; letter-sp
 .prod-card:hover {
   transform: translateY(-4px);
   border-color: hsl(18 90% 52% / 0.4);
-  box-shadow: var(--glow);
+  box-shadow: var(--glow), var(--shadow);
 }
 .prod-img-wrap {
   position: relative; overflow: hidden;
@@ -198,13 +230,14 @@ h1, h2, h3, .display { font-family: 'Bebas Neue', 'Inter', sans-serif; letter-sp
   width: 100%; height: 100%; object-fit: cover;
   transition: transform 0.7s cubic-bezier(.4,0,.2,1);
 }
-.prod-card:hover .prod-img { transform: scale(1.1); }
+.prod-card:hover .prod-img { transform: scale(1.08); }
 .prod-badge {
   position: absolute; top: 12px; left: 12px;
   background: var(--grad-fire);
   color: #fff; font-size: 11px; font-weight: 700;
   padding: 4px 12px; border-radius: 999px;
   box-shadow: 0 4px 12px hsl(0 0% 0% / 0.3);
+  letter-spacing: 0.02em;
 }
 .prod-incart {
   position: absolute; top: 12px; right: 12px;
@@ -214,29 +247,34 @@ h1, h2, h3, .display { font-family: 'Bebas Neue', 'Inter', sans-serif; letter-sp
   display: flex; align-items: center; gap: 4px;
 }
 .prod-body {
-  padding: 20px; display: flex; flex-direction: column;
+  padding: 18px; display: flex; flex-direction: column;
   gap: 10px; flex: 1;
 }
 .prod-name { font-family: 'Bebas Neue', sans-serif; font-size: 26px; line-height: 1.1; }
 .prod-desc { font-size: 13px; color: var(--subtle); flex: 1; }
 .prod-price {
-  font-family: 'Bebas Neue', sans-serif; font-size: 32px;
+  font-family: 'Bebas Neue', sans-serif; font-size: 30px;
   background: var(--grad-warm);
   -webkit-background-clip: text; background-clip: text;
   color: transparent;
 }
+
+/* ===== BOTÕES ===== */
 .btn-hero {
   display: inline-flex; align-items: center; justify-content: center; gap: 8px;
   padding: 12px 22px; border-radius: var(--radius);
   background: var(--grad-fire);
   color: #fff; font-weight: 700; font-size: 15px;
   box-shadow: var(--glow);
-  transition: all 0.35s cubic-bezier(.4,0,.2,1);
+  transition: all 0.3s cubic-bezier(.4,0,.2,1);
   white-space: nowrap;
 }
-.btn-hero:hover:not(:disabled) { filter: brightness(1.1); transform: translateY(-1px); }
-.btn-hero:disabled { opacity: 0.4; cursor: not-allowed; }
+.btn-hero:hover:not(:disabled) { filter: brightness(1.12); transform: translateY(-2px); }
+.btn-hero:active:not(:disabled) { transform: translateY(0); }
+.btn-hero:disabled { opacity: 0.35; cursor: not-allowed; }
 .btn-hero.full { width: 100%; }
+
+/* ===== QTY CONTROL ===== */
 .qty-ctrl {
   display: flex; align-items: center;
   background: var(--muted); border-radius: 999px; padding: 4px;
@@ -245,9 +283,8 @@ h1, h2, h3, .display { font-family: 'Bebas Neue', 'Inter', sans-serif; letter-sp
   width: 40px; height: 40px; border-radius: 999px;
   display: grid; place-items: center;
   font-size: 18px; font-weight: 700;
-  transition: background 0.2s;
-  /* Garante área de toque adequada */
   min-width: 44px; min-height: 44px;
+  transition: background 0.2s;
 }
 .qty-btn:hover { background: hsl(24 10% 28%); }
 .qty-num {
@@ -258,8 +295,9 @@ h1, h2, h3, .display { font-family: 'Bebas Neue', 'Inter', sans-serif; letter-sp
 /* ===== BOTTOM BAR (etapa 1) ===== */
 .bottom-bar {
   position: fixed; bottom: 0; left: 0; right: 0; z-index: 60;
-  background: hsl(24 12% 8% / 0.95);
-  backdrop-filter: blur(16px);
+  background: hsl(24 12% 7% / 0.96);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   border-top: 1px solid var(--border);
   padding: 14px 20px;
   display: flex; align-items: center; justify-content: space-between; gap: 16px;
@@ -290,8 +328,8 @@ h1, h2, h3, .display { font-family: 'Bebas Neue', 'Inter', sans-serif; letter-sp
   border-radius: 16px;
   text-align: left;
   width: 100%;
-  min-height: 48px; /* touch target */
-  transition: border-color 0.35s, box-shadow 0.35s, background 0.35s;
+  min-height: 48px;
+  transition: border-color 0.3s, box-shadow 0.3s, background 0.3s;
 }
 .opt-row:hover { border-color: hsl(18 90% 52% / 0.4); }
 .opt-row.selected {
@@ -303,7 +341,7 @@ h1, h2, h3, .display { font-family: 'Bebas Neue', 'Inter', sans-serif; letter-sp
   width: 52px; height: 52px; flex-shrink: 0;
   background: var(--muted); border-radius: 12px;
   display: grid; place-items: center; font-size: 24px;
-  transition: background 0.35s;
+  transition: background 0.3s;
 }
 .opt-row.selected .opt-icon { background: var(--grad-fire); }
 .opt-info { display: flex; flex-direction: column; flex: 1; min-width: 0; }
@@ -332,7 +370,7 @@ h1, h2, h3, .display { font-family: 'Bebas Neue', 'Inter', sans-serif; letter-sp
 /* ===== STEP NAV ===== */
 .step-nav {
   display: flex; justify-content: space-between; gap: 12px;
-  margin: 32px auto 0;
+  margin: 28px auto 0;
   max-width: 680px;
 }
 .btn-outline {
@@ -343,9 +381,9 @@ h1, h2, h3, .display { font-family: 'Bebas Neue', 'Inter', sans-serif; letter-sp
   color: var(--text); font-weight: 600; font-size: 14px;
   text-decoration: none;
   white-space: nowrap;
-  transition: border-color 0.2s;
+  transition: border-color 0.2s, background 0.2s;
 }
-.btn-outline:hover { border-color: hsl(18 90% 52% / 0.5); }
+.btn-outline:hover { border-color: hsl(18 90% 52% / 0.5); background: hsl(24 14% 16%); }
 
 /* ===== FORM ===== */
 form { max-width: 680px; margin: 0 auto; display: flex; flex-direction: column; gap: 16px; }
@@ -354,14 +392,17 @@ form { max-width: 680px; margin: 0 auto; display: flex; flex-direction: column; 
 input, textarea {
   background: var(--muted); border: 1px solid var(--border);
   color: var(--text); padding: 12px 14px;
-  border-radius: 10px; font-size: 15px;
-  /* Evita zoom no iOS ao focar */
+  border-radius: 10px;
   font-size: max(16px, 15px);
-  transition: border-color 0.2s;
+  transition: border-color 0.2s, box-shadow 0.2s;
   width: 100%;
   -webkit-appearance: none;
 }
-input:focus, textarea:focus { outline: none; border-color: var(--orange); }
+input:focus, textarea:focus {
+  outline: none;
+  border-color: var(--orange);
+  box-shadow: 0 0 0 3px hsl(18 90% 52% / 0.12);
+}
 textarea { resize: vertical; }
 .field-row { display: grid; grid-template-columns: 1fr 90px; gap: 12px; align-items: start; }
 .field-row .col2 { grid-column: span 1; }
@@ -401,7 +442,7 @@ textarea { resize: vertical; }
   border: 2px solid var(--border);
   border-radius: 16px; text-align: left;
   min-height: 48px;
-  transition: border-color 0.35s, box-shadow 0.35s, background 0.35s;
+  transition: border-color 0.3s, box-shadow 0.3s, background 0.3s;
 }
 .pay-opt:hover { border-color: hsl(18 90% 52% / 0.4); }
 .pay-opt.selected {
@@ -413,7 +454,7 @@ textarea { resize: vertical; }
   width: 48px; height: 48px; flex-shrink: 0;
   background: var(--muted); border-radius: 12px;
   display: grid; place-items: center; font-size: 22px;
-  transition: background 0.35s;
+  transition: background 0.3s;
 }
 .pay-opt.selected .pay-icon { background: var(--grad-fire); }
 .pay-name { font-weight: 700; font-size: 15px; line-height: 1.2; }
@@ -421,6 +462,7 @@ textarea { resize: vertical; }
   max-width: 680px; margin: 0 auto 12px;
   background: hsl(24 10% 14%); border-radius: 12px;
   padding: 14px 16px; font-size: 13px; color: var(--subtle);
+  border: 1px solid var(--border);
 }
 
 /* ===== REVIEW ===== */
@@ -466,7 +508,7 @@ textarea { resize: vertical; }
 /* ===== WHATSAPP BUTTON ===== */
 @keyframes zap-pulse {
   0%, 100% { box-shadow: 0 20px 60px -20px hsl(142 65% 42% / 0.5); }
-  50%       { box-shadow: 0 20px 60px -10px hsl(142 65% 42% / 0.8), 0 0 0 4px hsl(142 65% 42% / 0.15); }
+  50%       { box-shadow: 0 20px 60px -10px hsl(142 65% 42% / 0.8), 0 0 0 6px hsl(142 65% 42% / 0.12); }
 }
 .btn-whatsapp {
   display: inline-flex; align-items: center; justify-content: center; gap: 10px;
@@ -496,55 +538,136 @@ textarea { resize: vertical; }
 .btn-gps-verify:hover { background: hsl(142 65% 42% / 0.2); border-color: hsl(142 65% 42% / 0.8); }
 
 /* ============================================================
-   MOBILE-FIRST — Correções de alinhamento e responsividade
+   MOBILE — Redesign completo
    ============================================================ */
 
-/* ── Container: padding menor em telas pequenas ── */
+/* ── Container: padding lateral adequado ── */
 @media (max-width: 480px) {
-  .container { padding: 0 14px; }
+  .container { padding: 0 16px; }
 }
 
-/* ── Header: esconde horário em mobile (evita text overflow com botão Recomeçar) ── */
+/* ── Header mobile ── */
 @media (max-width: 600px) {
   .hd-hours { display: none; }
-  .hd-inner { height: 56px; gap: 8px; }
-  .logo-name { font-size: 21px; }
-  .logo-icon { width: 36px; height: 36px; font-size: 17px; border-radius: 10px; }
-  .btn-restart { font-size: 12px; padding: 5px 10px; }
-  /* Stepper cola logo abaixo do novo topo */
-  .stepper-bar { top: 56px; }
+  .hd-inner { height: 58px; gap: 8px; }
+  .logo-name { font-size: 22px; }
+  .logo-icon { width: 38px; height: 38px; font-size: 18px; border-radius: 10px; }
+  .btn-restart { font-size: 12px; padding: 5px 12px; }
+  .stepper-bar { top: 58px; }
 }
 
-/* ── Stepper: bubbles menores em telas muito pequenas ── */
+/* ── Stepper: bubbles menores ── */
 @media (max-width: 400px) {
   .stepper-bar { padding: 10px 0; }
   .s-bubble { width: 28px; height: 28px; font-size: 10px; }
   .s-line { min-width: 6px; margin: 0 2px; }
 }
 
-/* ── Step body: padding reduzido, sem lateral extra ── */
+/* ── Step body: espaçamento ajustado ── */
 @media (max-width: 600px) {
-  .step-body { padding: 28px 0 56px; }
-  .pb-bar { padding-bottom: 92px; }
-  .step-header { margin-bottom: 28px; }
-  .step-desc { font-size: 14px; }
-  .cat-section { margin-bottom: 36px; }
+  .step-body { padding: 24px 0 52px; }
+  .pb-bar { padding-bottom: 90px; }
+  .step-header { margin-bottom: 22px; }
+  .step-title { font-size: clamp(30px, 9vw, 48px); }
+  .step-desc { font-size: 13px; }
+  .cat-section { margin-bottom: 32px; }
+  .cat-title { font-size: 28px; }
 }
 
-/* ── Grid de produtos: 1 coluna em mobile ── */
-@media (max-width: 580px) {
-  .grid3 { grid-template-columns: 1fr; gap: 14px; }
-  .prod-card { border-radius: 18px; }
+/* ── PRODUTO: layout horizontal compacto no mobile ── */
+@media (max-width: 600px) {
+  .grid3 {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  /* Card vira linha horizontal */
+  .prod-card {
+    flex-direction: row;
+    border-radius: 16px;
+    min-height: 108px;
+    align-items: stretch;
+  }
+
+  /* Imagem: bloco fixo à esquerda */
+  .prod-img-wrap {
+    width: 108px;
+    min-width: 108px;
+    aspect-ratio: auto;
+    height: auto;
+    flex-shrink: 0;
+    border-radius: 0;
+  }
+
+  /* Badge menor e reposicionado */
+  .prod-badge {
+    font-size: 9px;
+    padding: 3px 8px;
+    top: 8px; left: 8px;
+  }
+
+  /* Incart badge */
+  .prod-incart {
+    font-size: 9px;
+    padding: 3px 8px;
+    top: 8px; right: 6px;
+    left: auto;
+  }
+
+  /* Body: info compacta à direita */
+  .prod-body {
+    padding: 12px 14px 12px 14px;
+    gap: 5px;
+    flex: 1;
+    justify-content: space-between;
+  }
+
+  .prod-name {
+    font-size: 19px;
+    line-height: 1;
+  }
+
+  .prod-desc {
+    font-size: 11px;
+    color: var(--subtle);
+    /* Limita a 2 linhas */
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .prod-price {
+    font-size: 22px;
+    line-height: 1;
+  }
+
+  /* Botão Adicionar compacto */
+  .btn-hero.full {
+    padding: 8px 12px;
+    font-size: 12px;
+    border-radius: 10px;
+    width: 100%;
+  }
+
+  /* Qty ctrl compacto */
+  .qty-ctrl { border-radius: 10px; padding: 2px; }
+  .qty-btn {
+    width: 32px; height: 32px;
+    min-width: 36px; min-height: 36px;
+    font-size: 16px;
+  }
+  .qty-num { font-size: 14px; }
 }
 
-/* ── Bottom bar: compacto e legível ── */
+/* ── Bottom bar: compacto ── */
 @media (max-width: 480px) {
-  .bottom-bar { padding: 10px 14px; gap: 10px; }
+  .bottom-bar { padding: 10px 16px; gap: 10px; }
   .bb-total { font-size: 26px; }
   .bb-count { font-size: 9px; letter-spacing: 1.5px; }
 }
 
-/* ── Listas de opções e cards: full-width em mobile ── */
+/* ── Full width listas e formulários ── */
 @media (max-width: 720px) {
   .option-list,
   .store-card,
@@ -555,21 +678,21 @@ textarea { resize: vertical; }
   .review-stack { max-width: 100%; }
 }
 
-/* ── Opt-row: padding menor, texto menor em telas apertadas ── */
+/* ── Opt-row mobile ── */
 @media (max-width: 440px) {
-  .opt-row { padding: 13px 13px; gap: 10px; }
-  .opt-icon { width: 44px; height: 44px; font-size: 20px; border-radius: 10px; }
-  .opt-name { font-size: 19px; }
+  .opt-row { padding: 13px 14px; gap: 12px; }
+  .opt-icon { width: 46px; height: 46px; font-size: 21px; border-radius: 10px; }
+  .opt-name { font-size: 20px; }
   .opt-sub { font-size: 11px; }
   .opt-price { font-size: 18px; }
 }
 
-/* ── Step nav: empilha os botões em telas pequenas ── */
+/* ── Step nav: botões empilhados ── */
 @media (max-width: 520px) {
   .step-nav {
     flex-direction: column-reverse;
     gap: 10px;
-    margin-top: 24px;
+    margin-top: 20px;
   }
   .step-nav .btn-hero,
   .step-nav .btn-outline,
@@ -580,26 +703,26 @@ textarea { resize: vertical; }
   }
 }
 
-/* ── Payment: ícone e nome menores para caber no grid 2 colunas ── */
+/* ── Payment grid mobile ── */
 @media (max-width: 420px) {
   .pay-opt { padding: 13px 10px; gap: 8px; border-radius: 12px; }
-  .pay-icon { width: 38px; height: 38px; font-size: 17px; border-radius: 10px; }
+  .pay-icon { width: 40px; height: 40px; font-size: 18px; border-radius: 10px; }
   .pay-name { font-size: 13px; }
   .pay-grid { gap: 8px; }
 }
 
-/* ── Form: campo número de endereço se adapta ── */
+/* ── Field row address ── */
 @media (max-width: 400px) {
   .field-row { grid-template-columns: 1fr 78px; }
 }
 
-/* ── Review: total menor em mobile ── */
+/* ── Review mobile ── */
 @media (max-width: 400px) {
   .rev-total-val { font-size: 28px; }
   .rev-card { padding: 16px; }
 }
 
-/* ── Botão WhatsApp: full-width em mobile ── */
+/* ── WhatsApp btn mobile ── */
 @media (max-width: 520px) {
-  .btn-whatsapp { width: 100%; }
+  .btn-whatsapp { width: 100%; font-size: 15px; padding: 15px 20px; }
 }
