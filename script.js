@@ -14,9 +14,9 @@ const STORE_MAPS_URL = "https://www.google.com/maps?q=Brasileia,AC";
 const DELIVERY_FEES = { retirada: 0, Brasileia: 5, "Epitaciolândia": 7 };
 
 const PRODUCTS = [
-  { id: "hamburguer",          name: "Hambúrguer",          description: "Pão, alface, tomate, carne, queijo, calabresa e batata palha.",                   price: 13, image: "img/hambuger 1.jpeg", category: "burger", tag: "Top vendido"     },
-  { id: "hamburguer-especial", name: "Hambúrguer Especial",  description: "Pão, alface, tomate, carne, queijo, presunto, calabresa, bacon e batata palha.",  price: 18, image: "img/hanburge 2.jpeg",  category: "burger"                           },
-  { id: "hamburguer-duplo",    name: "Hambúrguer Duplo",     description: "Pão, alface, tomate, 2 carnes, 2 queijos, 2 presuntos, 2 bacons e batata palha.", price: 23, image: "img/hanburge 3.jpeg", category: "burger", tag: "Pra fome grande" },
+  { id: "hamburguer",          name: "Clássico da Casa",          description: "Pão, alface, tomate, carne, queijo, calabresa e batata palha.",                   price: 13, image: "img/hambuger 1.jpeg", category: "burger", tag: "Top vendido"     },
+  { id: "hamburguer-especial", name: "Turbinado",  description: "Pão, alface, tomate, carne, queijo, presunto, calabresa, bacon e batata palha.",  price: 18, image: "img/hanburge 2.jpeg",  category: "burger"                           },
+  { id: "hamburguer-duplo",    name: "Duplo Supremo",     description: "Pão, alface, tomate, 2 carnes, 2 queijos, 2 presuntos, 2 bacons e batata palha.", price: 23, image: "img/hanburge 3.jpeg", category: "burger", tag: "Pra fome grande" },
   { id: "coca-2l",  name: "Coca-Cola 2L", description: "Refrigerante gelado 2 litros, ideal pra família.", price: 15, image: "img/coca lalaala.png", category: "drink" },
   { id: "monster",  name: "Monster",      description: "Energético gelado pra dar aquele gás.",          price: 26, image: "img/moster hhaahhaha.jpeg", category: "drink" },
 ];
