@@ -162,12 +162,6 @@ function resetOrder() {
   state.customer = { name: "", notes: "", street: "", number: "", neighborhood: "", complement: "", reference: "", coords: null };
   state.payment = null;
   state.change = "";
-  const btnGps = document.getElementById("btn-gps");
-  const gpsStatus = document.getElementById("gps-status");
-  const verifyLink = document.getElementById("gps-verify-link");
-  if (btnGps) { btnGps.textContent = "📍 Usar minha localização via GPS"; btnGps.classList.remove("captured"); }
-  if (gpsStatus) { gpsStatus.textContent = ""; gpsStatus.classList.add("hidden"); }
-  if (verifyLink) verifyLink.classList.add("hidden");
 }
 
 // ============================================
