@@ -534,7 +534,6 @@ textarea { resize: vertical; }
 /* ── Grid de produtos: 1 coluna em mobile ── */
 @media (max-width: 580px) {
   .grid3 { grid-template-columns: 1fr; gap: 14px; }
-  .prod-img-wrap { aspect-ratio: 16 / 9; }
   .prod-card { border-radius: 18px; }
 }
 
